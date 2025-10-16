@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archived Submissions</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+        body { font-family: 'Lato', sans-serif; background-color: #F3F4F6; color: #111827; margin: 0; padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; color: #1F2937; }
+        .submission { background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .submission-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #E5E7EB; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .name { font-weight: 700; font-size: 1.1rem; }
+        .timestamp { font-size: 0.8rem; color: #6B7280; }
+        .message { color: #374151; white-space: pre-wrap; }
+        #loading { text-align: center; color: #6B7280; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Archived Submissions</h1>
+        <div id="submissions-container">
+            <p id="loading">Loading submissions...</p>
+        </div>
+    </div>
+
+    <script>
+        const submissionsContainer = document.getElementById('submissions-container');
+        const loadingMessage = document.getElementById('loading');
+        const apiUrl = 'https://8gfi428cbj.execute-api.eu-north-1.amazonaws.com/default/get-submissions';
+
+        async function fetchSubmissions() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const submissions = await response.json();
+                
+                loadingMessage.remove();
+
+                if (submissions.length === 0) {
+                    submissionsContainer.innerHTML = '<p style="text-align: center;">No submissions found.</p>';
+                    return;
+                }
+
+                submissions.forEach(sub => {
+                    const submissionDiv = document.createElement('div');
+                    submissionDiv.className = 'submission';
+
+                    const date = new Date(sub.timestamp).toLocaleString();
+
+                    submissionDiv.innerHTML = `
+                        <div class="submission-header">
+                            <div>
+                                <p class="name">${sub.name}</p>
+                                <p class="email">${sub.email}</p>
+                            </div>
+                            <p class="timestamp">${date}</p>
+                        </div>
+                        <p class="message">${sub.message}</p>
+                    `;
+                    submissionsContainer.appendChild(submissionDiv);
+                });
+            } 
+            catch (error) {
+                loadingMessage.textContent = 'Failed to load submissions.';
+                console.error(error);
+            }
+        }
+
+        fetchSubmissions();
+    </script>
+</body>
+</html>
