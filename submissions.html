@@ -6,28 +6,105 @@
     <title>Archived Submissions</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
-        body { font-family: 'Lato', sans-serif; background-color: #F3F4F6; color: #111827; margin: 0; padding: 2rem; }
-        .container { max-width: 800px; margin: 0 auto; }
-        h1 { text-align: center; color: #1F2937; }
-        .submission { background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .submission-header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #E5E7EB; padding-bottom: 0.5rem; margin-bottom: 1rem; }
-        .name { font-weight: 700; font-size: 1.1rem; }
-        .timestamp { font-size: 0.8rem; color: #6B7280; }
-        .message { color: #374151; white-space: pre-wrap; }
-        #loading { text-align: center; color: #6B7280; }
+        :root {
+            --bg-color: #F3F4F6;
+            --form-bg-color: #FFFFFF;
+            --border-color: #D1D5DB; 
+            --text-color: #111827;
+            --placeholder-color: #6B7280;
+            --primary-color: #10B981;
+            --primary-hover-color: #059669;
+            --success-color: #10B981;
+            --error-color: #EF4444;
+        }
+
+        .container {
+            background-color: var(--bg-form-color);
+            color: #111827; 
+            margin: 0; 
+            padding: 2rem; 
+        }
+
+        body {
+            font-family: 'Lato', sans-serif; 
+            background-color: var(--bg-color);
+        }
+
+        .submissions-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        
+        h2, h3 {
+            text-align: center;
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 2rem;
+        }
+
+
+        .submission { 
+            background-color: #FFFFFF; 
+            border: 1px solid #E5E7EB; 
+            border-radius: 0.5rem; 
+            padding: 1.5rem; 
+            margin-bottom: 1rem; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+        }
+
+        .submission-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: baseline; 
+            border-bottom: 1px solid #E5E7EB; 
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem; 
+        }
+
+        .name { 
+            font-weight: 700; 
+            font-size: 1.1rem; 
+        }
+
+        .timestamp { 
+            font-size: 0.8rem; 
+            color: #6B7280; 
+        }
+
+        .message { 
+            color: #374151; 
+            white-space: pre-wrap; 
+        }
+
+        #loading { 
+            text-align: center; 
+            color: #6B7280; 
+        }
+
+        header {
+            font-family: 'Lato', sans-serif;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 30px;
+            background-color: var(--form-bg-color);
+        }
     </style>
 </head>
+<header>
+    <a href="index.html" style="text-decoration: none; color: black">Form</a>
+</header>
 <body>
-    <header>
-        <a href="index.html">Form</a>
-    </header>
     <div class="container">
-        <h1>Archived Submissions</h1>
-        <div id="submissions-container">
-            <p id="loading">Loading submissions...</p>
+        <div class="submissions-container">
+            <h2>Demo 6 - Archived Submissions</h2>
+            <h3>João Lucas Simões Moreira</h3>
+            <div id="submissions-container">
+                <p id="loading">Loading submissions...</p>
+            </div>
         </div>
     </div>
-
     <script>
         const submissionsContainer = document.getElementById('submissions-container');
         const loadingMessage = document.getElementById('loading');
@@ -35,13 +112,7 @@
 
         async function fetchSubmissions() {
             try {
-                const response = await fetch(apiUrl, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Methods": "GET, OPTIONS",
-                    },
-                });
+                const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
