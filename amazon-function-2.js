@@ -3,6 +3,18 @@ import { S3Client, ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/clien
 const s3 = new S3Client({});
 const bucketName = process.env.ARCHIVE_BUCKET_NAME;
 
+const createResponse = (statusCode, body) => {
+    return {
+        statusCode: statusCode,
+        headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, OPTIONS",
+        },
+        body: JSON.stringify(body),
+    };
+};
+
 export const handler = async (event) => {
     try {
         const listCommand = new ListObjectsV2Command({ Bucket: bucketName });
@@ -17,6 +29,7 @@ export const handler = async (event) => {
         const fileResponse = await s3.send(getCommand);
         const fileContent = await fileResponse.Body.transformToString();
         const dynamoDbJson = JSON.parse(fileContent);
+        
         return {
             name: dynamoDbJson.name.S,
             email: dynamoDbJson.email.S,
@@ -26,25 +39,12 @@ export const handler = async (event) => {
         });
 
         const submissions = await Promise.all(readPromises);
-
         submissions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
+        
         return createResponse(200, submissions);
-
     } 
     catch (error) {
         console.error(error);
         return createResponse(500, { message: "Failed to retrieve submissions." });
     }
-};
-
-const createResponse = (statusCode, body) => {
-    return {
-        statusCode: statusCode,
-        headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*", 
-        },
-        body: JSON.stringify(body),
-    };
 };
