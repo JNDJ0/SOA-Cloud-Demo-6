@@ -111,13 +111,12 @@
 
         async function fetchSubmissions() {
             try {
-                loadingMessage.remove();
-
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                
+                loadingMessage.remove();
+
                 const submissions = await response.json();
                 if (submissions.length === 0) {
                     submissionsContainer.innerHTML = '<p style="text-align: center;">No submissions found.</p>';
