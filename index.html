@@ -176,24 +176,19 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData),
                 });
-
                 if (response.ok) {
                     statusMessage.textContent = 'Thank you! Your message has been sent.';
                     statusMessage.className = 'success';
                     form.reset();
                 }
-                else {
-                    throw new Error('Server responded with an error.');
-                }
+                else throw new Error('Server responded with an error.');
             } 
             catch (error) {
                 statusMessage.textContent = 'An error occurred. Please try again.';
                 statusMessage.className = 'error';
                 console.error(error);
             } 
-            finally {
-                submitButton.disabled = false;
-            }
+            finally { submitButton.disabled = false; }
         });
     </script>
 </body>

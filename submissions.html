@@ -43,7 +43,6 @@
             margin-bottom: 2rem;
         }
 
-
         .submission { 
             background-color: #FFFFFF; 
             border: 1px solid #E5E7EB; 
@@ -98,7 +97,7 @@
 <body>
     <div class="container">
         <div class="submissions-container">
-            <h2>Demo 6 - Archived Submissions</h2>
+            <h2>Demo 6 - Archived submissions</h2>
             <h3>João Lucas Simões Moreira</h3>
             <div id="submissions-container">
                 <p id="loading">Loading submissions...</p>
@@ -112,25 +111,22 @@
 
         async function fetchSubmissions() {
             try {
+                loadingMessage.remove();
+
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const submissions = await response.json();
                 
-                loadingMessage.remove();
-
+                const submissions = await response.json();
                 if (submissions.length === 0) {
                     submissionsContainer.innerHTML = '<p style="text-align: center;">No submissions found.</p>';
                     return;
                 }
-
                 submissions.forEach(sub => {
                     const submissionDiv = document.createElement('div');
                     submissionDiv.className = 'submission';
-
                     const date = new Date(sub.timestamp).toLocaleString();
-
                     submissionDiv.innerHTML = `
                         <div class="submission-header">
                             <div>

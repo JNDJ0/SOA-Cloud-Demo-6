@@ -10,23 +10,23 @@ const s3 = new S3Client({});
 const bucketName = process.env.ARCHIVE_BUCKET_NAME;
 
 export const handler = async (event) => {
-  for (const record of event.Records) {
-    if (record.eventName === 'INSERT') {
-      const submission = record.dynamodb.NewImage;
-      
-      const fileName = `submission-${submission.timestamp.S}.json`;
-      const fileContent = JSON.stringify(submission, null, 2);
+  	for (const record of event.Records) {
+    	if (record.eventName === 'INSERT') {
+    		const submission = record.dynamodb.NewImage;
 
-      const params = {
-        Bucket: bucketName,
-        Key: fileName,
-        Body: fileContent,
-        ContentType: 'application/json'
-      };
+			const fileName = `submission-${submission.timestamp.S}.json`;
+			const fileContent = JSON.stringify(submission, null, 2);
 
-      await s3.send(new PutObjectCommand(params));
-      console.log(`Archived submission to ${fileName}`);
-    }
-  }
+			const params = {
+				Bucket: bucketName,
+				Key: fileName,
+				Body: fileContent,
+				ContentType: 'application/json'
+			};
+
+			await s3.send(new PutObjectCommand(params));
+			console.log(`Archived submission to ${fileName}`);
+    	}
+  	}
   return { status: 'Success' };
 };

@@ -1,3 +1,9 @@
+/**
+ * This code is responsible from fetching the JSONs from s3 bucket
+ * and returning them to submissions.html page.
+ * It's hosted on AWS Lambda.
+ */
+
 import { S3Client, ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({});
@@ -21,21 +27,21 @@ export const handler = async (event) => {
         const listResponse = await s3.send(listCommand);
 
         if (!listResponse.Contents || listResponse.Contents.length === 0) {
-        return createResponse(200, []);
+            return createResponse(200, []);
         }
 
         const readPromises = listResponse.Contents.map(async (file) => {
-        const getCommand = new GetObjectCommand({ Bucket: bucketName, Key: file.Key });
-        const fileResponse = await s3.send(getCommand);
-        const fileContent = await fileResponse.Body.transformToString();
-        const dynamoDbJson = JSON.parse(fileContent);
-        
-        return {
-            name: dynamoDbJson.name.S,
-            email: dynamoDbJson.email.S,
-            message: dynamoDbJson.message.S,
-            timestamp: dynamoDbJson.timestamp.S
-        };
+            const getCommand = new GetObjectCommand({ Bucket: bucketName, Key: file.Key });
+            const fileResponse = await s3.send(getCommand);
+            const fileContent = await fileResponse.Body.transformToString();
+            const dynamoDbJson = JSON.parse(fileContent);
+            
+            return {
+                name: dynamoDbJson.name.S,
+                email: dynamoDbJson.email.S,
+                message: dynamoDbJson.message.S,
+                timestamp: dynamoDbJson.timestamp.S
+            };
         });
 
         const submissions = await Promise.all(readPromises);

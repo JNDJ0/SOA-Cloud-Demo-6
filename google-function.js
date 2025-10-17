@@ -14,9 +14,9 @@ const cors = require('cors');
 const app = express();
 
 const corsOptions = {
-  origin: '*', 
-  methods: 'POST, GET, OPTIONS',
-  allowedHeaders: 'Content-Type',
+    origin: '*', 
+    methods: 'POST, GET, OPTIONS',
+    allowedHeaders: 'Content-Type',
 };
 
 app.use(cors(corsOptions));
@@ -61,8 +61,8 @@ app.post('/', async (req, res) => {
         ]);
 
         return res.status(200).send({ message: 'Submission successful!' });
-
-    } catch (error) {
+    } 
+    catch (error) {
         console.error('Error processing submission:', error);
         return res.status(500).send({ error: 'An internal error occurred. Please try again later.' });
     }
